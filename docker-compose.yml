@@ -1,0 +1,51 @@
+version: '3.8'
+networks:
+  dev:
+   driver: bridge
+services:
+  postgreysql_db:
+    container_name: postgreysql_db
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ManageMoneyDB
+    ports:
+      - "5433:5432"
+    volumes: 
+      - database-data:/var/lib/postgres/data/
+    networks: 
+     - dev
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    volumes: 
+      - pgadmin:/root/.pgadmin
+  manage-password:
+    container_name: manage-password-service
+    image: managepasswordapp
+    build:
+      context: .
+      dockerfile: ManageMoney.Api/Dockerfile
+    environment:
+      - DefaultConnection=User ID=postgres;Password=postgres;Server=postgreysql_db;Port=5432;Database=ManageMoneyDB;Integrated Security=true;Pooling=true;
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+       - "8088:80"
+    networks: 
+      - dev
+    
+    depends_on: 
+      - postgreysql_db
+
+volumes:
+  database-data:
+  pgadmin:
