@@ -6,4 +6,4 @@ The project includes below advantages:
 - Create a Dockerfile file describing a simple .NET Core service container. 
 - Build, run, and verify the functionality of the service. 
 - Debug the service running as a container. 
-** To run on docker we need to run the below commands: docker-compose build and docker-compose up
+-  To run on docker we need to run the below commands: docker-compose build and docker-compose up
